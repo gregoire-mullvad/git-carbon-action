@@ -8,5 +8,7 @@ runs:
       shell: "bash"
     - run: "go env GOPATH"
       shell: "bash"
-    - run: "git carbon update -all"
+    - run: |
+        export PATH=$(go env GOPATH)/bin:$PATH
+        git carbon update -all
       shell: "bash"
