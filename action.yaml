@@ -6,9 +6,9 @@ runs:
     - name: "Install git-carbon"
       run: "go install github.com/mullvad/git-carbon@latest"
       shell: "bash"
-    - run: "go env GOPATH"
-      shell: "bash"
-    - run: |
+    - shell: bash
+      run: |
         export PATH=$(go env GOPATH)/bin:$PATH
-        git carbon update -all
-      shell: "bash"
+        git carbon update --all
+    - shell: bash
+      run: git diff --staged --exit-code
