@@ -11,3 +11,5 @@ runs:
       with:
         branch: git-carbon-action/patch
         labels: git-carbon
+        commit-message: Update carbon copies
+        title: Update carbon copies
