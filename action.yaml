@@ -6,7 +6,5 @@ runs:
     - name: "Run git-carbon update --all"
       shell: bash
       run: go run github.com/mullvad/git-carbon@latest update --all
-    - shell: bash
-      run: git diff --staged --exit-code
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v7
