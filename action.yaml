@@ -8,3 +8,6 @@ runs:
       run: go run github.com/mullvad/git-carbon@latest update --all
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v7
+      with:
+        branch: git-carbon-action/patch
+        labels: git-carbon
