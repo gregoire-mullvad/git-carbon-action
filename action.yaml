@@ -1,0 +1,8 @@
+name: 'git-carbon'
+description: "Automatically open PRs with `git-carbon update`"
+runs:
+  using: "composite"
+  steps:
+    - name: "Install git-carbon"
+      run: "go install github.com/mullvad/git-carbon@latest"
+    - run: "git carbon update -all"
