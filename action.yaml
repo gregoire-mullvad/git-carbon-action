@@ -5,4 +5,6 @@ runs:
   steps:
     - name: "Install git-carbon"
       run: "go install github.com/mullvad/git-carbon@latest"
+      shell: "bash"
     - run: "git carbon update -all"
+      shell: "bash"
