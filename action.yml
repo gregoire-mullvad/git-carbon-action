@@ -1,0 +1,91 @@
+name: git-carbon update
+description: Install git-carbon, sync tracked files, and open a PR with the diff.
+
+inputs:
+  token:
+    description: GitHub token used for downloading releases and creating pull requests.
+    required: true
+    default: ${{ github.token }}
+  version:
+    description: git-carbon version to install (e.g. v1.2.3) or "latest".
+    required: false
+    default: latest
+  pr-branch:
+    description: Branch name for the update PR.
+    required: false
+    default: git-carbon/update
+  pr-title:
+    description: Title of the pull request.
+    required: false
+    default: 'Update git-carbon tracked files'
+  pr-body:
+    description: Body of the pull request.
+    required: false
+    default: Automated update of files tracked by git-carbon.
+  pr-commit-message:
+    description: Commit message for the update commit.
+    required: false
+    default: 'Update git-carbon tracked files'
+  pr-labels:
+    description: Labels to apply to the pull request (comma or newline separated).
+    required: false
+    default: ''
+  pr-assignees:
+    description: Assignees for the pull request (comma or newline separated).
+    required: false
+    default: ''
+  pr-reviewers:
+    description: Reviewers for the pull request (comma or newline separated).
+    required: false
+    default: ''
+  pr-draft:
+    description: Create the pull request as a draft.
+    required: false
+    default: 'false'
+
+outputs:
+  pull-request-number:
+    description: The pull request number.
+    value: ${{ steps.create-pr.outputs.pull-request-number }}
+  pull-request-url:
+    description: The URL of the pull request.
+    value: ${{ steps.create-pr.outputs.pull-request-url }}
+  pull-request-operation:
+    description: The pull request operation (created, updated, closed, none).
+    value: ${{ steps.create-pr.outputs.pull-request-operation }}
+  pull-request-head-sha:
+    description: The HEAD SHA of the pull request branch.
+    value: ${{ steps.create-pr.outputs.pull-request-head-sha }}
+  pull-request-branch:
+    description: The pull request branch name.
+    value: ${{ steps.create-pr.outputs.pull-request-branch }}
+
+runs:
+  using: composite
+  steps:
+    - name: Install git-carbon
+      run: go install "github.com/mullvad/git-carbon@${{ inputs.version }}"
+      shell: bash
+     
+    - name: Add $GOPATH/bin to $PATH
+      run: echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+      shell: bash
+
+    - name: Run git carbon update
+      run: git carbon update --all
+      shell: bash
+
+    - name: Create pull request
+      id: create-pr
+      uses: peter-evans/create-pull-request@v7
+      with:
+        token: ${{ inputs.token }}
+        branch: ${{ inputs.pr-branch }}
+        commit-message: ${{ inputs.pr-commit-message }}
+        title: ${{ inputs.pr-title }}
+        body: ${{ inputs.pr-body }}
+        labels: ${{ inputs.pr-labels }}
+        assignees: ${{ inputs.pr-assignees }}
+        reviewers: ${{ inputs.pr-reviewers }}
+        draft: ${{ inputs.pr-draft }}
+        delete-branch: true
